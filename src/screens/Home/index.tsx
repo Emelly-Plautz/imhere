@@ -1,20 +1,29 @@
 import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Participant } from '../../components/Participant';
 import { styles } from './styles';
+import { useState } from 'react';
+
 
 export function Home() {
+    const [participants, setParticipants] = useState<string[]>([])
+    const [participantsName, setParticipantsName] = useState<string>('')
+
 
     function handleParticipantAdd(){
-        if(participants.includes("Emelly")) {
+        if(participants.includes(participantsName)) {
             return Alert.alert("Participante Existe", "Já existe um participante na lista com esse nome.")
         }
+
+        setParticipants(prevState => [...prevState, participantsName])
+        setParticipantsName('')
     }
+    
 
     function handleParticipantRemove(name: string){
         Alert.alert("Remover", `Tem certeza que deseja remover participante ${name}?`, [
             {
                 text: 'Sim',
-                onPress: () =>Alert.alert("Deletado!")
+                onPress: () =>setParticipants(prevState => prevState.filter(participant => participant !== name))
             },
             {
                 text: 'Não',
@@ -22,8 +31,6 @@ export function Home() {
             },
         ])
     }
-
-    const participants = [ 'Emelly', 'Matheus', 'Pedro', 'Jose', 'Maria', 'Ana', 'Mariana', 'João', 'Antonio', 'Danieli', 'Silvio', 'Vera', 'Wanderley' ]
 
   return (
     <View style={styles.container}>
@@ -39,6 +46,8 @@ export function Home() {
         style={styles.input}
         placeholder='Nome do participante'
         placeholderTextColor='#fff'
+        onChangeText={setParticipantsName}
+        value={participantsName}
         />
 
         <TouchableOpacity 
@@ -57,12 +66,12 @@ export function Home() {
                 <Participant 
                 key={participant}
                 name={participant} 
-                onRemove={() => handleParticipantRemove("Emelly Palutz")}/>
+                onRemove={() => handleParticipantRemove(participant)}
+                />
             ))
         }
 
-        <Participant name="Emelly Palutz" onRemove={() => handleParticipantRemove("Emelly Palutz")}/>
-        <Participant name="Matheus Iubel"  onRemove={() => handleParticipantRemove("Matheus Iubel")}/>
+    
       </ScrollView>
 
     </View>
